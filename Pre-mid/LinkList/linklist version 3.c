@@ -1,59 +1,59 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX 10
+//version 3
 
 struct LNode{
 	char data;
 	struct LNode *link;
 };
 
-typedef struct{
+typedef struct {
 	struct LNode *elemPtr;
 	int count;
-}*LinkList;
+}LinkList;
+
 
 void initList(LinkList *LL);
-void insertFront(LinkList LL, char data);
-void insertRear(LinkList LL, char data);
-void insertPosition(LinkList LL, char data, int position);
-void insertSorted(LinkList LL, char data);
-void deleteFront(LinkList LL);
-void deleteRear(LinkList LL);
-void deletePosition(LinkList LL, int position);
+void insertFront(LinkList *LL, char data);
+void insertRear(LinkList *LL, char data);
+void insertPosition(LinkList *LL, char data, int position);
+void insertSorted(LinkList *LL, char data);
+void deleteFront(LinkList *LL);
+void deleteRear(LinkList *LL);
+void deletePosition(LinkList *LL, int position);
 void display(LinkList LL);
 
 int main(){
 	
 	LinkList LL;
 	initList(&LL);
-	insertFront(LL, 1);
-	insertFront(LL, 2);
-	insertFront(LL, 3);
-	insertFront(LL, 4);
+	insertFront(&LL, 1);
+	insertFront(&LL, 2);
+	insertFront(&LL, 3);
+	insertFront(&LL, 4);
 	display(LL);
-	insertRear(LL, 5);
+	insertRear(&LL, 5);
 	display(LL);
-	insertPosition(LL, 6, 0);
+	insertPosition(&LL, 6, 0);
 	display(LL);
-	insertSorted(LL, 1);
+	insertSorted(&LL, 1);
 	display(LL);
-	deleteFront(LL);
+	deleteFront(&LL);
 	display(LL);
-	deleteRear(LL);
+	deleteRear(&LL);
 	display(LL);
-	deletePosition(LL, 4);
+	deletePosition(&LL, 4);
 	display(LL);
 	
-	
-	return;
+	return 0;
 }
 
 void initList(LinkList *LL){
-	*LL = (LinkList)calloc(1,sizeof(LinkList));
+	LL->count = 0;
 }
 
-void insertFront(LinkList LL, char data){
+void insertFront(LinkList *LL, char data){
 	struct LNode *temp;
 	temp = (struct LNode*)malloc(sizeof(struct LNode));
 	if(temp != NULL){
@@ -64,7 +64,7 @@ void insertFront(LinkList LL, char data){
 	}
 }
 
-void insertRear(LinkList LL, char data){
+void insertRear(LinkList *LL, char data){
 	struct LNode *temp, **trav;
 	for(trav = &LL->elemPtr; *trav != NULL; trav = &(*trav)->link){}
 	temp = (struct LNode*)malloc(sizeof(struct LNode));
@@ -76,11 +76,10 @@ void insertRear(LinkList LL, char data){
 	}
 }
 
-
-void insertPosition(LinkList LL, char data, int position){
+void insertPosition(LinkList *LL, char data, int position){
 	struct LNode *temp, **trav;
 	int i;
- 	trav = &LL->elemPtr;
+	trav = &LL->elemPtr;
 	for(i = 0; i < position; i++){
 		trav = &(*trav)->link;
 	}
@@ -93,7 +92,7 @@ void insertPosition(LinkList LL, char data, int position){
 	}
 }
 
-void insertSorted(LinkList LL, char data){
+void insertSorted(LinkList *LL, char data){
 	struct LNode *temp, **trav;
 	for(trav = &LL->elemPtr; *trav != NULL && data < (*trav)->data; trav = &(*trav)->link){}
 	temp = (struct LNode*)malloc(sizeof(struct LNode));
@@ -105,7 +104,7 @@ void insertSorted(LinkList LL, char data){
 	}
 }
 
-void deleteFront(LinkList LL){
+void deleteFront(LinkList *LL){
 	struct LNode *temp;
 	if(LL->count > 0){
 		temp = LL->elemPtr;
@@ -115,20 +114,7 @@ void deleteFront(LinkList LL){
 	}
 }
 
-void deleteRear(LinkList LL){
-	struct LNode *temp, **trav;
-	if(LL->count > 0){
-		for(trav = &LL->elemPtr; *trav != NULL && (*trav)->link != NULL; trav = &(*trav)->link){}
-		if(*trav != NULL){
-			temp = *trav;
-			*trav = temp->link;
-			free(temp);
-			LL->count--;
-		}
-	}
-}
-
-void deletePosition(LinkList LL, int position){
+void deletePosition(LinkList *LL, int position){
 	struct LNode *temp, **trav;
 	int i;
 	if(LL->count > 0){
@@ -140,15 +126,30 @@ void deletePosition(LinkList LL, int position){
 			temp = *trav;
 			*trav = temp->link;
 			free(temp);
-			LL->count--;
+			LL->count++;
 		}
 	}
 }
 
+void deleteRear(LinkList *LL){
+	struct LNode *temp, **trav;
+	if(LL->count > 0){
+		for(trav = &LL->elemPtr; *trav != NULL && (*trav)->link != NULL; trav = &(*trav)->link){}
+		if(*trav != NULL){
+			temp = *trav;
+			*trav = temp->link;
+			free(temp);
+			LL->count--;
+		}
+	}
+	
+	
+}
+
 void display(LinkList LL){
 	struct LNode *trav;
-	printf("[");
-	trav = LL->elemPtr;
+	printf("[ ");
+	trav = LL.elemPtr;
 	while(trav != NULL){
 		printf("%d ", trav->data);
 		trav = trav->link;
