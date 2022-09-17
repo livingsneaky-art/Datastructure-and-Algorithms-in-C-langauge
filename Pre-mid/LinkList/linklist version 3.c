@@ -13,6 +13,12 @@ typedef struct {
 	int count;
 }LinkList;
 
+/*
+typedef struct node{
+	char *data;
+	struct node *link;
+}*LinkList;
+*/
 
 void initList(LinkList *LL);
 void insertFront(LinkList *LL, char data);
