@@ -24,13 +24,11 @@ int main(){
 
 void initList(LinkList *LL){
 	*LL = (LinkList)calloc(1, sizeof(LinkList));
-	//(*LL)->data = (char*)malloc(sizeof(char));
 }
 
 void insertFront(LinkList *LL, char data){
 	LinkList temp;
 	temp = (LinkList)malloc(sizeof(LinkList));
-	//temp->data = (char*)malloc(sizeof(char));
 	if(temp != NULL){
 		temp->data = data;
 		temp->link = *LL;
