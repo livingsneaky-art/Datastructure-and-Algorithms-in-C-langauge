@@ -6,7 +6,6 @@ typedef struct node{
 	struct node *link;
 }*LinkList;
 
-
 void initList(LinkList *LL);
 void insertFront(LinkList *LL, char data);
 void insertRear(LinkList *LL, char data);
