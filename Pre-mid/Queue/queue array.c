@@ -31,12 +31,24 @@ int main(){
 	enqueue(&Q, 1);
 	visualizeQueue(Q);
 	display(Q);
+	dequeue(&Q);
+	visualizeQueue(Q);
+	display(Q);
 	enqueue(&Q, 2);
 	visualizeQueue(Q);
 	display(Q);
 	enqueue(&Q, 3);
 	visualizeQueue(Q);
 	display(Q);
+	enqueue(&Q, 4);
+	visualizeQueue(Q);
+	display(Q);
+	int retVal = front(Q);
+	printf("%d\n ", retVal);
+	Boolean retVal1 = isEmpty(Q);
+	printf("%d\n ", retVal1);
+	Boolean retVal2 = isFull(Q);
+	printf("%d\n ",retVal2);
 	
 	return 0;
 }
@@ -55,6 +67,24 @@ void enqueue(Queue *Q, char data){
 		Q->rear = (Q->rear+1)%MAX;
 		Q->data[Q->rear] = data;
 	}
+}
+
+void dequeue(Queue *Q){
+	if((Q->rear+1)%MAX != Q->front){
+		Q->front = (Q->front+1)%MAX;
+	}
+}
+
+int front(Queue Q){
+	return((Q.rear+1)%MAX != Q.front) ? Q.data[Q.front] : -1;
+}
+
+Boolean isEmpty(Queue Q){
+	return((Q.rear+1)%MAX == Q.front) ? TRUE : FALSE;
+}
+
+Boolean isFull(Queue Q){
+	return ((Q.rear+2)%MAX == Q.front) ? TRUE : FALSE;
 }
 
 void visualizeQueue(Queue Q){
