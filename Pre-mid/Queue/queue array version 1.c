@@ -44,11 +44,11 @@ int main(){
 	visualizeQueue(Q);
 	display(Q);
 	int retVal = front(Q);
-	printf("%d\n ", retVal);
+	printf("%d\n", retVal);
 	Boolean retVal1 = isEmpty(Q);
-	printf("%d\n ", retVal1);
+	printf("%d\n", retVal1);
 	Boolean retVal2 = isFull(Q);
-	printf("%d\n ",retVal2);
+	printf("%d",retVal2);
 	
 	return 0;
 }
