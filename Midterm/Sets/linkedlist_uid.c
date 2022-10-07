@@ -3,7 +3,7 @@
 
 typedef struct node{
 	char data;
-	struct node *link;
+	struct node *next;
 }*SET;
 
 void initSet(SET *C);
@@ -31,8 +31,8 @@ int main(){
 	
 	A = populateSet(X, count);
 	B = populateSet(Y, count);
-	display(A);
-	display(B);
+	puts("\nSet A: ");display(A);
+	puts("\nSet A: ");display(B);
 	
 	C = union_unsorted(A, B);
 	puts("\nUnion Unsorted: ");display(C);
@@ -49,11 +49,11 @@ int main(){
 	C = merge(A, B);
 	puts("\nMerge: ");display(C);
 	
-	int retVal = isMember(A, 6);
-	printf("%d\n", retVal);
-	
 	C = insert(A, 3, 7);
 	puts("\nInsert New Data: ");display(C);
+	
+	int retVal = isMember(A, 6);
+	printf("%d\n", retVal);
 	
 	int retVal1 = MIN(A);
 	printf("%d\n", retVal1);
@@ -77,7 +77,7 @@ SET populateSet(char C[], int count){
 		temp = (SET)calloc(1, sizeof(struct node));
 		if(temp != NULL){
 			temp->data = C[x];
-			temp->link = S;
+			temp->next = S;
 			S = temp;
 		}	
 	}
@@ -86,25 +86,27 @@ SET populateSet(char C[], int count){
 
 SET union_unsorted(SET A, SET B){
 	SET S, temp;
-	SET trav, travC;
+	SET travA, travB, trav;
+	travA = A;
+	travB = B;
 	initSet(&S);
 	
-	for(trav = A; trav != NULL; trav = trav->link){
+	for(; travA != NULL; travA = travA->next){
 		temp = (SET)calloc(1, sizeof(struct node));
 		if(temp != NULL){
-			temp->data = trav->data;
-			temp->link = S;
+			temp->data = travA->data;
+			temp->next = S;
 			S = temp;
 		}	
 	}
 	
-	for(trav = B; trav != NULL; trav = trav->link){
-		for(travC = S; travC != NULL && travC->data != trav->data; travC = travC->link){}
-		if(travC == NULL){
+	for(; travB != NULL; travB = travB->next){
+		for(trav = S; trav != NULL && travB->data != trav->data; trav = trav->next){}
+		if(trav == NULL){
 			temp = (SET)calloc(1, sizeof(struct node));
 			if(temp != NULL){
-				temp->data = trav->data;
-				temp->link = S;
+				temp->data = travB->data;
+				temp->next = S;
 				S = temp;
 			}
 		}
@@ -113,74 +115,91 @@ SET union_unsorted(SET A, SET B){
 }
 
 SET union_sorted(SET A, SET B){
-	SET S, *trav;
+	SET S, temp;
+	SET travA, travB, *trav;
+	travA = A;
+	travB = B;
 	initSet(&S);
 	
-	for(trav = &S; A != NULL && B != NULL; trav = &(*trav)->link){
-		*trav = (SET)calloc(1, sizeof(struct node));
-		if(*trav != NULL){
-			if(A->data > B->data){
-				(*trav)->data = A->data;
-				A = A->link;
-			}else{
-				if(A->data == B->data){
-					A = A->link;
-				}
-				(*trav)->data = B->data;
-				B = B->link;
-			}
-		}
-	}
-	if(A == NULL && B != NULL){
-		A = B;
-	}
-	
-	for(; A != NULL; A = A->link){
-		(*trav) = (SET)calloc(1, sizeof(struct node));
-		if(*trav != NULL){
-			(*trav)->data = A->data;
-			trav = &(*trav)->link;
-		}
-	}
-	*trav = NULL;
-	return S;
+	while (travA != NULL && travB != NULL) {
+        if (travA->data > travB->data) {
+            temp = (SET)malloc(sizeof(struct node));
+            if (temp != NULL) {
+                temp->data = travA->data;
+                temp->next = S;
+                S = temp;
+            }
+            travA = travA->next;
+        } else {
+            if (travA->data == travB->data) {
+                travA = travA->next;
+            } 
+            temp = (SET)malloc(sizeof(struct node));
+            if (temp != NULL) {
+                temp->data = travB->data;
+                temp->next = S;
+                S = temp;
+            }
+            travB = travB->next;
+        }
+    }
+
+    if (travB != NULL) {
+        travA = travB;
+    }
+
+    while (travA != NULL) {
+        temp = (SET)malloc(sizeof(struct node));
+        if (temp != NULL) {
+            temp->data = travA->data;
+            temp->next = S;
+            S = temp;
+        }
+        travA = travA->next;
+    }
+
+    return S;
 }
 
 SET intersection_sorted(SET A, SET B){
 	SET S, temp;
-	SET *trav;
+	SET travA, travB;
+	travA = A;
+	travB = B;
 	initSet(&S);
 	
-	for(trav = &S; A != NULL; A = A->link){
-		for(temp = B; temp != NULL && A->data < temp->data; temp = temp->link){}
-		if(temp != NULL && A->data == temp->data){
-			*trav =  (SET)calloc(1, sizeof(struct node));
-			if(*trav != NULL){
-				(*trav)->data = A->data;
-				trav = &(*trav)->link;
+	for(; travA != NULL; travA = travA->next){
+		for(; travB != NULL && travA->data < travB->data; travB = travB->next){}
+		if(travB != NULL && travA->data == travB->data){
+			temp =  (SET)calloc(1, sizeof(struct node));
+			if(temp != NULL){
+				temp->data = travA->data;
+				temp->next = S;
+				S = temp;
 			}
 		}
 	}
-	*trav = NULL;
 	return S;
 }
 
 SET difference_sorted(SET A, SET B){
 	SET S, temp;
-	SET *trav;
+	SET travA, travB;
+	travA = A;
+	travB = B;
 	initSet(&S);
 	
-	for(trav = &S; A != NULL; A = A->link){
-		for(temp = B; temp != NULL && A->data < temp->data; temp = temp->link){}
-		if(temp == NULL || A->data != temp->data){
-			*trav = (SET)calloc(1, sizeof(struct node));
-			if(*trav != NULL){
-				(*trav)->data = A->data;
-				trav = &(*trav)->link;
+	for(; travA != NULL; travA = travA->next){
+		for(; travB != NULL && travA->data < travB->data; travB = travB->next){}
+		if(travB == NULL || travA->data != travB->data){
+			temp = (SET)calloc(1, sizeof(struct node));
+			if(temp != NULL){
+				temp->data = travA->data;
+				temp->next = S;
+				S = temp;
 			}
 		}
 	}
-	*trav = NULL;
 	return S;
 }
 
@@ -201,7 +220,7 @@ SET merge(SET A, SET B){
 int isMember(SET C, char data){
 	SET trav;
 	int result = 0;
-	for(trav = C; trav != NULL; trav = trav->link){
+	for(trav = C; trav != NULL; trav = trav->next){
 		if(trav->data == data){
 			result = data;
 		}
@@ -216,12 +235,12 @@ SET insert(SET C, int position, char data){
 	int x;
 	trav = &C;
 	for(x = 0; x < position; x++){
-		trav = &(*trav)->link;
+		trav = &(*trav)->next;
 	}
 	temp = (SET)calloc(1, sizeof(struct node));
 	if(temp != NULL){
 		temp->data = data;
-		temp->link = C;
+		temp->next = C;
 		C = temp;
 	}
 	return C;
@@ -231,7 +250,7 @@ int MIN(SET C){
 	SET trav;
 	int MIN = 1000;
 	
-	for(trav = C; trav != NULL; trav = trav->link){
+	for(trav = C; trav != NULL; trav = trav->next){
 		if(trav->data < MIN){
 			MIN = trav->data;
 		}
@@ -243,7 +262,7 @@ int MAX(SET C){
 	SET trav;
 	int MAX = 0;
 	
-	for(trav = C; trav != NULL; trav = trav->link){
+	for(trav = C; trav != NULL; trav = trav->next){
 		if(trav->data > MAX){
 			MAX = trav->data;
 		}
@@ -256,7 +275,7 @@ void display(SET C){
 	trav = C;
 	while(trav != NULL){
 		printf("%d ", trav->data);
-		trav = trav->link;
+		trav = trav->next;
 	}
 	printf("\n");
 }
