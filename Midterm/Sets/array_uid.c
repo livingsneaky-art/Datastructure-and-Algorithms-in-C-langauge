@@ -32,8 +32,8 @@ int main(){
 	
 	A = populateSet(X);
 	B = populateSet(Y);
-	display(A);
-	display(B);
+	puts("\nSet A: ");display(A);
+	puts("\nSet B: ");display(B);
 	
 	C = union_unsorted(A, B);
 	puts("\nUnion Unsorted: ");display(C);
@@ -50,11 +50,11 @@ int main(){
 	C = merge(A, B);
 	puts("\nMerge: ");display(C);
 	
-	int retVal = isMember(A, 3);
-	printf("%d", retVal);
-	
 	C = insert(A, 0, 7);
 	puts("\nInserted Data:  ");display(C);
+	
+	int retVal = isMember(A, 6);
+	printf("%d\n", retVal);
 	
 	int retVal1 = MIN(A);
 	printf("%d\n", retVal1);
@@ -104,10 +104,13 @@ SET union_unsorted(SET A, SET B){
 
 SET union_sorted(SET A, SET B){
 	SET S;
-	initSet(&S);
 	int x, y;
-	
-	for(x = 0, y = 0; x < A.count && y < B.count;){
+	x = 0;
+	y = 0;
+	initSet(&S);
+
+
+	while( x < A.count && y < B.count){
 		if(A.data[x] < B.data[y]){
 			S.data[S.count] = A.data[x];
 			x++;
@@ -171,7 +174,7 @@ SET merge(SET A, SET B){
 		S = union_sorted(A, B);
 	}else{
 		puts("Sets aren't disjoint\n");
-		S.count;
+		S.count = 0;
 	}
 	return S;
 }
