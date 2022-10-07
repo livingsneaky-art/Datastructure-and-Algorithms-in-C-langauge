@@ -32,7 +32,7 @@ int main(){
 	A = populateSet(X, count);
 	B = populateSet(Y, count);
 	puts("\nSet A: ");display(A);
-	puts("\nSet A: ");display(B);
+	puts("\nSet B: ");display(B);
 	
 	C = union_unsorted(A, B);
 	puts("\nUnion Unsorted: ");display(C);
