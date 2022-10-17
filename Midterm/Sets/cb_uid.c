@@ -121,7 +121,7 @@ SET union_unsorted(VirtualHeap *VH, SET A, SET B){
 	SET trav, travA, travB;
 	initSet(&S);
 	
-	for(travA = A; travA != -1; travA = travA = VH->HS[travA].next){
+	for(travA = A; travA != -1;  travA = VH->HS[travA].next){
 		temp = allocSpace(VH);
 		if(temp != -1){
 			VH->HS[temp].data = VH->HS[travA].data;
