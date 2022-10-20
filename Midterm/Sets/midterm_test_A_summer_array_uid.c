@@ -22,7 +22,13 @@ typedef struct{
 
 void initSet(setClass *C);
 setClass populateSet(Studtype C[]);
+setClass union_unsorted(setClass A, setClass B);
+setClass union_sorted(setClass A, setClass B);
 setClass getStudents(setClass A, setClass B);
+setClass difference_unsorted(setClass A, setClass B);
+setClass difference_sorted(setClass A, setClass B);
+setClass getStudents_sorted(setClass A, setClass B);
+
 void display(setClass C);
 
 
@@ -53,8 +59,23 @@ int main(){
 	puts("\nSET A: ");display(A);
 	puts("\nSET B: ");display(B);
 	
-	C = getStudents(A, B);
-	puts("\nBoth enrolled: ");display(C);
+//	C = union_sorted(A, B);
+//	puts("\nUnion Sorted: ");display(C);
+	
+//	C = union_unsorted(A, B);
+//	puts("\nUnion Unsorted: ");display(C);
+	
+//	C = getStudents(A, B);
+//	puts("\nBoth enrolled: ");display(C);
+	
+//	C = getStudents_sorted(A, B);
+//	puts("\nBoth enrolled in Sorted: ");display(C);
+	
+	C = difference_unsorted(A, B);
+	puts("\nDifference Unsorted: ");display(C);
+
+//	C = difference_sorted(A, B);
+//	puts("\nDifference Sorted: ");display(C);
 	
 	return 0;
 }
@@ -75,11 +96,69 @@ setClass populateSet(Studtype C[]){
 	return S;
 }
 
+setClass union_unsorted(setClass A, setClass B){
+	setClass S;
+	int x, y;
+	initSet(&S);
+	if(S.studs != NULL){
+		for(x = 0; x < A.count; x++){
+			S.studs[S.count++] = A.studs[x];
+		}
+		
+		for(x = 0; x < B.count; x++){
+			for(y = 0; y < S.count; y++){
+				if((strcmp(B.studs[x].ID, S.studs[y].ID) == 0)){
+					break;
+				}	
+			}
+			if(y == S.count){
+				S.studs[S.count++] = B.studs[x];
+			}
+		}
+	}
+	return S;
+}
+
+setClass union_sorted(setClass A, setClass B){
+	setClass S;
+	int x, y;
+	x = 0; 
+	y = 0;
+	initSet(&S);
+	
+	if(S.studs != NULL){
+		while(x < A.count && y < B.count){
+			if(strcmp(A.studs[x].ID, B.studs[y].ID) < 0 ){
+				S.studs[S.count] = A.studs[x];
+				x++;
+			}else{
+				if(strcmp(A.studs[x].ID, B.studs[y].ID) == 0){
+					x++;
+				}
+				S.studs[S.count] = B.studs[y];
+				y++;
+			}
+			S.count++;
+		}
+		if(y < B.count){
+			A = B;
+			x = y;
+		}
+		while(x < A.count){
+			S.studs[S.count] = A.studs[x];
+			S.count++;
+			x++;
+		}
+	}
+	return S;
+}
+
 setClass getStudents(setClass A, setClass B){
 	setClass S;
 	int x, y;
 	initSet(&S);
-	
+	//if assumes acceding the ID 
+	//Big O(n)
 	if(S.studs != NULL){
 		for(x = y = 0; x < A.count && y < B.count;){
 			if(strcmp(A.studs[x].ID, B.studs[y].ID) < 0){
@@ -90,6 +169,62 @@ setClass getStudents(setClass A, setClass B){
 				S.studs[S.count++] = A.studs[x];
 				x++;
 				y++;
+			}
+		}
+	}
+	return S;
+}
+
+setClass getStudents_sorted(setClass A, setClass B){
+	setClass S;
+	int x, y;
+	initSet(&S);
+	
+	if(S.studs != NULL){
+		for(x = 0; x < A.count; x++){
+			for(y = 0; y < B.count && (strcmp(A.studs[x].ID, B.studs[y].ID) > 0); y++){}
+				if(y < B.count && (strcmp(A.studs[x].ID, B.studs[y].ID) == 0)){
+					S.studs[S.count] = A.studs[x];
+					S.count++;
+				}
+		}
+	}
+	return S;
+}
+
+setClass difference_unsorted(setClass A, setClass B){
+	setClass S;
+	int x, y;
+	initSet(&S);
+	
+	if(S.studs != NULL){
+		for(x = y = 0; x < A.count && y < B.count;){
+			if(strcmp(A.studs[x].ID, B.studs[y].ID) > 0){
+				y++;
+				
+			}else if(strcmp(A.studs[x].ID, B.studs[y].ID) == 0){
+				x++;
+				y++;
+				
+			}else{
+				S.studs[S.count++] = A.studs[x];
+				x++;
+			}
+		}
+	}
+	return S;
+}
+
+setClass difference_sorted(setClass A, setClass B){
+	setClass S;
+	int x, y;
+	initSet(&S);
+	
+	if(S.studs != NULL){
+		for(x = 0; x < A.count; x++){
+			for(y = 0; y < B.count && (strcmp(A.studs[x].ID, B.studs[y].ID) > 0); y++){}
+			if(y == B.count || (strcmp(A.studs[x].ID, B.studs[y].ID) != 0)){
+				S.studs[S.count++] = A.studs[x];
 			}
 		}
 	}
