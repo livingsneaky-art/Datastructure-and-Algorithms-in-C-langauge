@@ -60,7 +60,7 @@ void insert(Heap *H, int num){
         childndx = H->lastNdx;
         parentndx = (childndx-1)/2;
 
-        while (childndx > 0 && H->data[parentndx] > num){
+        while (childndx > 0 && H->data[parentndx] > num){ //<
             H->data[childndx] = H->data[parentndx];
             childndx = parentndx;
             parentndx = (childndx-1)/2;
