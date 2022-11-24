@@ -20,7 +20,6 @@
 *		Post-Order:     18 10 8 29 76 39 28 85 89 94 98 95 90 77
 */
 
-
 //insert delete member min max
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,41 +34,33 @@ typedef struct node{
 
 typedef int SET[Max];
 
-void initTree(BST *B); 
+void initTree(BST *B);
 
-void Insert(BST *B, int elem); //Non-Recursive
-void Delete(BST *B, int elem); //Non-Recursive
-int Member(BST B, int elem); //Non-Recursive
-int MIN(BST B); //Non-Recursive
-int MAX(BST B); //Non-Recursive
+void Insert(BST *B, int elem); //Recursive
+void Delete(BST *B, int elem); //Recursive
+int DeleteMin(BST *B); //Recursive
+int Member(BST B, int elem); //Recursive
+int MIN(BST B); //Recursive
+int MAX(BST B); //Recursive
 
 void preOrder(BST B); //Recursive
 void inOrder(BST B); //Recursive
 void postOrder(BST B); //Recursive
-
 
 int main(){
 	
 	BST B;
 	SET D = {77, 28, 8, 10, 18, 39, 29, 76, 90, 89, 85, 95, 94, 98};
 	int x;
+	
 	initTree(&B);
-	
-	
 	for(x = 0; x < Max; x++) Insert(&B, D[x]);
-	//Insert(&B, 10);
-	//Insert(&B, 5);
-	//Insert(&B, 7);
-	//Insert(&B, 14);
-	//Insert(&B, 12);
-	//Insert(&B, 18);
-	//Insert(&B, 15);
 	
 	printf("Pre-Order: \n");
 	preOrder(B);
 	printf("\n");
-	
 	Delete(&B, 28);
+	
 	preOrder(B);
 	printf("\n");
 	
@@ -79,8 +70,7 @@ int main(){
 	
 	printf("Post-Order: \n");
 	postOrder(B);
-	printf("\n");
-	printf("\n");
+	printf("\n\n");
 	
 	printf("||1 Member 0 not\n");
 	int result = Member(B, 76);
@@ -101,62 +91,93 @@ void initTree(BST *B){
 
 void Insert(BST *B, int elem){
 	BST *trav;
-	for(trav=B; *trav != NULL && elem != (*trav)->elem;){
-		trav = ((*trav)->elem < elem) ? &(*trav)->RC : &(*trav)->LC;
-	}
+	trav = B;
 	
 	if(*trav == NULL){
 		*trav = (BST)calloc(1, sizeof(struct node));
 		if(*trav != NULL){
 			(*trav)->elem = elem;
 		}
+	}else if((*trav)->elem == elem){
+		printf("%d is not unique", elem);
+	}else if(elem < (*trav)->elem){
+		Insert(&(*trav)->LC, elem);
+	}else {
+		Insert(&(*trav)->RC, elem);
 	}
 }
 
 void Delete(BST *B, int elem){
-	BST *trav, *trav2, temp;
+	BST *trav, temp;
+	trav = B;
 	
-	for(trav = B; *trav != NULL && elem != (*trav)->elem;){
-		trav = ((*trav)->elem < elem) ? &(*trav)->RC : &(*trav)->LC;
-	}
-	
-	if(*trav != NULL){
-		if((*trav)->LC == NULL){
-			temp = *trav;
-			*trav = temp->RC;
-			free(temp);
-		}else if((*trav)->RC == NULL){
+	if(*trav == NULL){
+		printf("Elem/Node not found");
+	}else if(elem == (*trav)->elem){
+		if((*trav)->RC == NULL){
 			temp = *trav;
 			*trav = temp->LC;
 			free(temp);
-		}else{
-			for(trav2 = &(*trav)->RC; (*trav2)->LC != NULL; trav2 = &(*trav2)->LC){}
-			temp = *trav2;
-			*trav2 = temp->RC;
-			(*trav)->elem = temp->elem;
+		}else if((*trav)->LC == NULL){
+			temp = *trav;
+			*trav = temp->RC;
 			free(temp);
+		}else {
+			(*trav)->elem = DeleteMin(&(*trav)->RC);
 		}
+	}else if(elem < (*trav)->elem){
+		Delete(&(*trav)->LC, elem);
+	}else{
+		Delete(&(*trav)->RC, elem);
+	}
+}
+
+int DeleteMin(BST *B){
+	BST *trav, temp;
+	trav = B;
+	int ret;
+	
+	if((*trav)->LC == NULL){
+		temp = *trav;
+		*trav = temp->RC;
+		ret = temp->elem;
+		free(temp);
+		return ret;
+	}else{
+		return DeleteMin(&(*trav)->LC);
 	}
 }
 
 int Member(BST B, int elem){
-	BST trav;
-	for(trav = B; trav != NULL && elem != trav->elem;){
-		trav = (trav->elem < elem) ? trav->RC : trav->LC;
+	if(B == NULL){
+		return 0;
+	}else if(elem == B->elem){
+		return 1;
+	}else if(elem < B->elem){
+		return Member(B->LC, elem);
+	}else {
+		return Member(B->RC, elem);
 	}
-	return (trav != NULL) ? 1 : 0;
 }
 
 int MIN(BST B){
 	BST trav;
-	for(trav = B; trav->LC != NULL; trav = trav->LC){}
-	return trav->elem;
+	trav = B;
+	if(trav->LC == NULL){
+		return trav->elem;
+	}else if(trav->LC != NULL){
+		MIN(trav->LC);
+	}
 }
 
 int MAX(BST B){
 	BST trav;
-	for(trav = B; trav->RC != NULL; trav = trav->RC){}
-	return trav->elem;
+	trav = B;
+	if(trav->RC == NULL){
+		return trav->elem;
+	}else if(trav->RC != NULL){
+		MAX(trav->RC);
+	}
 }
 
 void preOrder(BST B){

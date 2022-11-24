@@ -35,17 +35,16 @@ typedef struct node{
 
 typedef int SET[Max];
 
-void initTree(BST *B); 
-
+void initTree(BST *B); //Non-Recursive
 void Insert(BST *B, int elem); //Non-Recursive
 void Delete(BST *B, int elem); //Non-Recursive
 int Member(BST B, int elem); //Non-Recursive
 int MIN(BST B); //Non-Recursive
 int MAX(BST B); //Non-Recursive
 
-void preOrder(BST B); //Recursive
-void inOrder(BST B); //Recursive
-void postOrder(BST B); //Recursive
+void preOrder(BST B);
+void inOrder(BST B);
+void postOrder(BST B);
 
 
 int main(){
@@ -91,7 +90,6 @@ int main(){
 	
 	int resultMax = MAX(B);
 	printf("Max: %d\n", resultMax);
-	
 	return 0;
 }
 
