@@ -1,31 +1,3 @@
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Codespaces
-Marketplace
-Explore
- 
-@livingsneaky-art 
-Mark-Ameka
-/
-Data-Structures-Notes
-Public
-Code
-Issues
-Pull requests
-Actions
-Projects
-Security
-Insights
-Data-Structures-Notes/3. PRE-FINALS/BST/BST_LL (Util Func).c
-@Checkinator
-Checkinator added linear search and unmerged bst nr/r
-Latest commit c7fce28 on Jul 30
- History
- 1 contributor
-297 lines (245 sloc)  6.25 KB
-
 /*
 	Binary Search Tree: is a node-based binary tree data structure which has the following properties:
 		* The left subtree of a node contains only nodes with keys lesser than the node’s key.
@@ -323,18 +295,4 @@ bool isBalance(BST T){
 		return (lc - rc) <= 1 ? true : false;
 	}
 }
-Footer
-© 2022 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-Data-Structures-Notes/3. PRE-FINALS/BST at main · Mark-Ameka/Data-Structures-NotesData-Structures-Notes/BST_LL (Util Func).c at main · Mark-Ameka/Data-Structures-Notes
+
