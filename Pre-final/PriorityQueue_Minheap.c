@@ -35,7 +35,7 @@ int main(){
     initializeHeap(&H);
     
     for(i = 0; i < len; i++) insert(&H, x[i]);
-	
+	display(H);
     printf("\nHeapsort:\n"); heapSort(&H); display(H);
     
     minHeapify(&H);
